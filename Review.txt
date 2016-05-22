@@ -1,0 +1,4 @@
+1. Đạn em để là biến toàn cục(ở ngoài) Thế ít nữa có 5 con xe tăng anh biết đnaj nào của con xe nào?
+Mình đang thiết kế con xe tăng, vạy sao em ko nghĩ đến việc thiết kế cho nó có khả năng bắn(viết thêm hàm shot())
+thay vì em nhờ 1 thế lực bên ngoài bắn hộ(em đang nhận sự kiến bấm phím cách rồi tạo ra viên đnaj luôn hãy tạo nó trong hàm 
+shot(), và đẩy nó vào cái mảng lưu đạn của xe tăng)
