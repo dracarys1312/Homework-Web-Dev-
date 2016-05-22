@@ -1,7 +1,7 @@
 class Tank{
     constructor(x, y){
         this.readyShot = true;
-        this.bullet;
+        this.bullet = null;
         this.x = x;
         this.y = y;
         this.speedX = 0;
@@ -30,14 +30,24 @@ class Tank{
     }
     update(){
         var isMove = true;
+        if(this.bullet != null){
+            var rect1 = {x:this.bullet.x, y:this.bullet.y,width:16,height:16};
+            for(var i=0;i<arrBrick.length;i++)
+        {
+            var rect2 = {x:arrBrick[i].x, y: arrBrick[i].y, width:16,height:16};
+            if(this.checkCollision(rect1,rect2)==true)
+            {
+                arrBrick.splice(i,1);
+                this.bullet = null;
+                break;
+            }
+        }
+        }
         var rect1 = {x:this.x + this.speedX, y:this.y + this.speedY, width:32, height:32};
         for(var i = 0; i < arrBrick.length; i++){
             var rect2 = {x:arrBrick[i].x, y: arrBrick[i].y, width:16, height:16};
             if(this.checkCollision(rect1, rect2) == true){
                 isMove = false;
-                // if(this.bullet =! null){
-                //
-                // }
                 break;
             }
         }
@@ -62,7 +72,7 @@ class Tank{
             this.y += this.speedY;
         }
 
-        if(this.readyShot == false){
+        if(this.bullet != null){
             this.bullet.update();
         }
 
@@ -105,7 +115,7 @@ class Tank{
     }
 
     shoot(){
-        if(this.readyShot == true){
+        if(this.bullet = null){
             this.readyShot = false;
             this.bullet = new Bullet(this.x+13, this.y+13, this.direction);
         }
