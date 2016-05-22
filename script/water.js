@@ -5,11 +5,13 @@ class Water {
     constructor(i, j) {
         this.x = j * 16;
         this.y = i * 16;
-        this.sprite = new Image();
-        this.sprite.src = "images/water_1.png";
+        this.sprite = new Animation(this.x,this.y,"water_",2,10);
+    }
+    update(){
+        this.sprite.update();
     }
     draw(context) {
-        context.drawImage(this.sprite, this.x, this.y);
+        this.sprite.draw(context);
     }
 }
 

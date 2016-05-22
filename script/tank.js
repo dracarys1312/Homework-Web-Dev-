@@ -81,7 +81,7 @@ class Tank{
 
     draw(context){
         context.drawImage(this.sprite, this.x, this.y);
-        if(this.readyShot == false){
+        if(this.bullet != null){
             this.bullet.draw(context);
         }
     }
@@ -115,7 +115,7 @@ class Tank{
     }
 
     shoot(){
-        if(this.bullet = null){
+        if(this.bullet == null){
             this.readyShot = false;
             this.bullet = new Bullet(this.x+13, this.y+13, this.direction);
         }

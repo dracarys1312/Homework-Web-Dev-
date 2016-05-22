@@ -79,6 +79,9 @@ function gameStart() {
 
 function gameUpdate() {
     player.update();
+    for(var i = 0; i < arrWater.length; i++){
+        arrWater[i].update();
+    }
 }
 
 function gameDrawer(context) {
