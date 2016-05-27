@@ -46,19 +46,6 @@ class Bullet{
 
     update(){
         var isShoot = true;
-        var rect1 = {x:this.x, y:this.y,width:16,height:16};
-        for(var i=0;i<arrBrick.length;i++)
-        {
-            var rect2 = {x:arrBrick[i].x, y: arrBrick[i].y, width:16,height:16};
-            if(this.checkCollision(rect1,rect2)==true)
-            {
-                isShoot = false;
-                arrBrick.splice(i,1);
-                break;
-            }
-        }
-
-        
         if (isShoot == true) {
             this.x += this.speedX;
             this.y += this.speedY;

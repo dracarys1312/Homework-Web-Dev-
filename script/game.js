@@ -4,6 +4,8 @@ var arrBrick = new Array();
 var arrSteel = new Array();
 var arrWater = new Array();
 var arrTrees = new Array();
+var socket;
+var enemyTanks = new Array();
 
 window.onload = function () {
     var canvas = document.createElement("canvas");
@@ -38,8 +40,8 @@ window.onload = function () {
         [0, 0, 0, 0, 0, 0, 2, 2, 3, 3, 0, 0, 0, 0, 0, 0, 3, 3, 3, 3, 4, 4, 4, 4, 0, 0],
         [0, 0, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
         [0, 0, 0, 0, 1, 1, 0, 0, 1, 1, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 1, 1, 2, 2, 0, 0, 0, 0],
-        [1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 1, 1, 2, 2, 0, 0, 0, 0]
+        [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 1, 1, 2, 2, 0, 0, 0, 0],
+        [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 1, 1, 2, 2, 0, 0, 0, 0]
     ];
     for(var i = 0; i < 26; i++){
         for(var j = 0; j < 26; j++){
@@ -61,7 +63,39 @@ window.onload = function () {
             }
         }
     }
+    initSocketClient();
 };
+
+function initSocketClient() {
+    socket = io.connect();
+    player = new Tank(100, 100,0);
+    socket.emit('player_created',{x: player.x, y:player.y});
+    socket.on('info_other_players',function (data) {
+        player.id = data.id;
+        console.log(player.id);
+        for (var i = 0; i < data.tanks.length; i++){
+            var newTank = new Tank(data.tanks[i].x,data.tanks[i].y, data.tanks[i].id);
+            enemyTanks.push(newTank);
+        }
+    });
+    socket.on('new_player_connected', function (data) {
+        var newTank = new Tank(data.x,data.y, data.id);
+        enemyTanks.push(newTank);
+    });
+
+    socket.on('enemy_update',function (data) {
+        for(var i = 0; i< enemyTanks.length; i++ ){
+            if(enemyTanks[i].id == data.id){
+                enemyTanks[i].direction = data.direction;
+                console.log(data.direction);
+                enemyTanks[i].x = data.x;
+                enemyTanks[i].y = data.y;
+                break;
+            }
+        }
+    });
+}
+
 var player;
 
 var gameLoop = function () {
@@ -79,12 +113,22 @@ function gameStart() {
 
 function gameUpdate() {
     player.update();
+    for(var i = 0; i < arrWater.length; i++){
+        arrWater[i].update();
+    }
+    socket.emit('player_update',{x: player.x, y: player.y, id: player.id, direction: player.direction});
+    for(var i=0; i< enemyTanks.length; i++){
+        enemyTanks[i].update();
+    }
 }
 
 function gameDrawer(context) {
     context.fillStyle = "black";
     context.fillRect(0, 0, window.innerWidth, window.innerHeight);
     player.draw(context);
+    for(var i = 0; i < enemyTanks.length; i++){
+        enemyTanks[i].draw(context);
+    }
     for(var i = 0; i < arrBrick.length; i++){
         arrBrick[i].draw(context);
     }
